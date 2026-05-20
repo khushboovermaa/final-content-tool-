@@ -357,6 +357,111 @@
             transform: translateY(-1px);
         }
 
+        /* ── Rewrite Mode Toggle ── */
+        .rewrite-mode-toggle {
+            display: flex;
+            gap: 0;
+            margin-bottom: 28px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1.5px solid rgba(96,165,250,0.3);
+            background: rgba(10,18,35,0.5);
+            position: relative;
+        }
+        .rewrite-mode-toggle::before {
+            content: 'REWRITE MODE';
+            position: absolute;
+            top: -10px;
+            left: 14px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #60a5fa;
+            background: #0f172a;
+            padding: 0 6px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            line-height: 1.4;
+            position: relative;
+        }
+        .mode-btn .mode-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+        .mode-btn .mode-label { display: block; font-size: 13px; font-weight: 700; }
+        .mode-btn .mode-desc { display: block; font-size: 11px; font-weight: 400; margin-top: 2px; opacity: 0.7; }
+        .mode-btn:first-child { border-right: 1px solid rgba(96,165,250,0.15); }
+        .mode-btn.active[data-mode="optimize"] {
+            background: linear-gradient(135deg, rgba(96,165,250,0.18) 0%, rgba(96,165,250,0.08) 100%);
+            color: #60a5fa;
+        }
+        .mode-btn.active[data-mode="fresh"] {
+            background: linear-gradient(135deg, rgba(251,113,133,0.18) 0%, rgba(167,139,250,0.1) 100%);
+            color: #fb7185;
+        }
+        .mode-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.04);
+            color: #cbd5e1;
+        }
+        .fresh-mode-notice {
+            background: linear-gradient(135deg, rgba(251,113,133,0.12) 0%, rgba(167,139,250,0.07) 100%);
+            border: 1.5px solid rgba(251,113,133,0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #fda4af;
+            line-height: 1.8;
+            display: none;
+        }
+        .fresh-mode-notice strong { color: #fb7185; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+        .fresh-mode-notice ul { margin: 8px 0 0 16px; }
+        .fresh-mode-notice li { margin-bottom: 4px; }
+        .fresh-mode-notice.visible { display: block; }
+        .optimize-mode-notice {
+            background: linear-gradient(135deg, rgba(52,211,153,0.07) 0%, rgba(52,211,153,0.03) 100%);
+            border: 1px solid rgba(52,211,153,0.2);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #6ee7b7;
+            line-height: 1.7;
+        }
+        /* ── Fresh Rewrite extra fields ── */
+        .fresh-extra-fields { display: none; }
+        .fresh-extra-fields.visible { display: block; }
+
+        /* ── Perspective / Angle field ── */
+        .angle-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .angle-chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid rgba(167,139,250,0.3);
+            background: rgba(167,139,250,0.08);
+            color: #c4b5fd;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .angle-chip:hover { border-color: rgba(167,139,250,0.6); background: rgba(167,139,250,0.18); }
+        .angle-chip.selected { border-color: #a78bfa; background: rgba(167,139,250,0.25); color: #ddd6fe; }
+
         .opt-label {
             display:flex; 
             align-items:center; 
@@ -509,7 +614,38 @@
         <div id="rewrite" class="sub-content">
             <div class="tool-section">
                 <h2 class="section-title">Rewrite &amp; Optimize Your Content</h2>
-                <p class="info-text">Paste your existing content and get a full rewrite — <strong style="color:#60a5fa;">same structure, better words.</strong> Every section, heading, and layout from your original is preserved. Only the copy is improved with stronger language, keyword integration, and E-E-A-T signals.</p>
+                <p class="info-text">Choose your rewrite mode below, then fill in keywords, page settings, and paste your content.</p>
+
+                <!-- ── Rewrite Mode Toggle ── -->
+                <div class="rewrite-mode-toggle" style="margin-top:28px;">
+                    <button class="mode-btn active" data-mode="optimize" onclick="setRewriteMode('optimize')">
+                        <span class="mode-icon">⚡</span>
+                        <span class="mode-label">Optimize Existing</span>
+                        <span class="mode-desc">Same words, stronger copy — improved language, keywords &amp; E-E-A-T signals</span>
+                    </button>
+                    <button class="mode-btn" data-mode="fresh" onclick="setRewriteMode('fresh')">
+                        <span class="mode-icon">✍️</span>
+                        <span class="mode-label">Fresh Rewrite</span>
+                        <span class="mode-desc">100% original content — new perspective, new messaging, zero paraphrasing</span>
+                    </button>
+                </div>
+
+                <!-- Mode notice boxes -->
+                <div id="optimizeModeNotice" class="optimize-mode-notice">
+                    <strong style="color:#34d399;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">✓ Structure Preserved</strong><br>
+                    The AI follows your original content's sections exactly — same headings, same order, same approximate word count per section. Only the copy is improved with stronger language, deeper keyword integration, and E-E-A-T signals.
+                </div>
+                <div id="freshModeNotice" class="fresh-mode-notice">
+                    <strong>✍️ Fresh Rewrite Mode — What This Does</strong>
+                    Your existing content is used <em>only as a structural blueprint</em>. The AI will:
+                    <ul>
+                        <li>Write <strong>100% original content</strong> — zero paraphrasing, zero reworded sentences</li>
+                        <li>Build entirely <strong>new messaging, new angles, new proof points</strong> from scratch</li>
+                        <li>Preserve the <strong>exact section structure, heading names, and word count</strong> of your reference</li>
+                        <li>Naturally weave in your primary &amp; secondary keywords without stuffing</li>
+                        <li>Match your Fox design layout — content fits every card, grid, and section as designed</li>
+                    </ul>
+                </div>
 
                 <!-- Keywords Block -->
                 <div style="font-size:11px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(96,165,250,0.15);">Keywords</div>
@@ -545,13 +681,44 @@
                 </div>
 
                 <!-- Page Type info note -->
-                <div id="pageTypePreview" style="background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.2);border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:#6ee7b7;line-height:1.7;">
-                    <strong style="color:#34d399;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">✓ Structure Preserved</strong><br>
-                    The AI will follow your original content's sections exactly — same headings, same order. Page type is used only to tune the tone and keyword placement style.
+                <div id="pageTypePreview" style="background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.2);border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:#6ee7b7;line-height:1.7;display:none;"></div>
+
+                <!-- ── Fresh Rewrite Extra Fields ── -->
+                <div id="freshExtraFields" class="fresh-extra-fields">
+                    <div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;margin:0 0 12px;padding-bottom:6px;border-bottom:1px solid rgba(167,139,250,0.15);">Fresh Content Direction</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">New Content Angle / Perspective <span style="font-size:11px;color:#64748b;font-weight:400;">what makes this version different</span></label>
+                            <input type="text" class="form-input" id="freshAngle" placeholder="e.g., Challenge-based approach, data-led storytelling, client-outcome focus">
+                            <div class="angle-chips" id="angleChips">
+                                <span class="angle-chip" onclick="selectAngle(this,'Authority-first positioning')">Authority-first positioning</span>
+                                <span class="angle-chip" onclick="selectAngle(this,'Client outcome storytelling')">Client outcome storytelling</span>
+                                <span class="angle-chip" onclick="selectAngle(this,'Problem-solution framework')">Problem-solution framework</span>
+                                <span class="angle-chip" onclick="selectAngle(this,'Data &amp; proof-led messaging')">Data &amp; proof-led messaging</span>
+                                <span class="angle-chip" onclick="selectAngle(this,'Challenger brand voice')">Challenger brand voice</span>
+                                <span class="angle-chip" onclick="selectAngle(this,'Consultative expert tone')">Consultative expert tone</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tone of Voice</label>
+                            <select class="form-select" id="freshTone">
+                                <option value="professional">Professional &amp; Authoritative</option>
+                                <option value="conversational">Conversational &amp; Direct</option>
+                                <option value="persuasive">Persuasive &amp; Conversion-Focused</option>
+                                <option value="educational">Educational &amp; Insightful</option>
+                                <option value="bold">Bold &amp; Challenger Brand</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Brand / Business Context <span style="font-size:11px;color:#64748b;font-weight:400;">USPs, proof points, key differentiators to weave in</span></label>
+                        <textarea class="form-textarea" id="freshBrandContext" style="min-height:80px;" placeholder="e.g., 12+ years in digital marketing, 500+ clients across India, proprietary 3-step growth framework, Google Premier Partner..."></textarea>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Your Current Content <span style="color:#ef4444;">*</span></label>
+                    <label class="form-label" id="contentPasteLabel">Your Current Content <span style="color:#ef4444;">*</span></label>
+                    <div id="contentPasteHint" style="font-size:12px;color:#64748b;margin-bottom:6px;line-height:1.6;">Paste your existing page content. In Fresh Rewrite mode, this is used <strong style="color:#a78bfa;">only as a structural blueprint</strong> — the section names, heading hierarchy, and word counts are extracted and the rest is completely rewritten from scratch.</div>
                     <textarea class="form-textarea" id="currentContent" style="min-height:180px;" placeholder="Paste your existing content here..." oninput="updateWordCountInfo()"></textarea>
                 </div>
 
@@ -567,7 +734,7 @@
                 </div>
 
                 <div class="button-group">
-                    <button class="btn btn-primary" onclick="rewriteContent()"><span>✨</span> Rewrite</button>
+                    <button class="btn btn-primary" onclick="rewriteContent()" id="rewriteBtn"><span>✨</span> <span id="rewriteBtnLabel">Rewrite Content</span></button>
                     <button class="btn btn-secondary" onclick="clearRewrite()">Clear</button>
                 </div>
                 <div id="rewriteResults" class="results-container"></div>
@@ -768,12 +935,16 @@
             </ol>
 
             <h3>Feature 2: Rewrite Content</h3>
-            <p><strong>Purpose:</strong> Optimize existing content for better rankings.</p>
+            <p><strong>Purpose:</strong> Optimize existing content for better rankings — two modes available.</p>
+            <p><strong>Standard Rewrite</strong> — Improves your existing copy: stronger language, better keyword integration, and E-E-A-T signals. Same structure, better words.</p>
+            <p><strong>Fresh Content Mode (New)</strong> — Writes completely new content using your page as a structural blueprint only. No paraphrasing, no synonym swapping, no spun text. The AI starts from scratch with a blank slate and builds new messaging, new proof points, and a new narrative while matching your exact section structure and word count per section (critical for Fox design layouts).</p>
             <ol>
-                <li>Enter your target keyword</li>
-                <li>Select page type</li>
-                <li>Paste your current content</li>
-                <li>Click "Rewrite"</li>
+                <li>Select your mode: <strong>Standard Rewrite</strong> or <strong>Fresh Content Mode</strong></li>
+                <li>Enter your primary keyword and secondary/LSI keywords</li>
+                <li>Select page type and target audience</li>
+                <li>In Fresh Mode: optionally fill in the New Angle, Brand Info, USP, and Proof Points fields for better output</li>
+                <li>Paste your current content (used as structure blueprint in Fresh Mode)</li>
+                <li>Click "Rewrite Content" or "Generate Fresh Content"</li>
             </ol>
 
             <h3>Feature 3: Generate Content</h3>
@@ -1018,11 +1189,36 @@ Fill in 4 to 5 sectionsToRewrite entries for YOUR URL. Fill in one competitor ob
         info.innerHTML = html;
     }
 
+    let _rewriteMode = 'optimize';
+
+    function setRewriteMode(mode) {
+        _rewriteMode = mode;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.mode-btn[data-mode="${mode}"]`).classList.add('active');
+        const isFresh = mode === 'fresh';
+        document.getElementById('optimizeModeNotice').style.display = isFresh ? 'none' : 'block';
+        document.getElementById('freshModeNotice').classList.toggle('visible', isFresh);
+        document.getElementById('freshExtraFields').classList.toggle('visible', isFresh);
+        document.getElementById('pageTypePreview').style.display = isFresh ? 'none' : 'block';
+        document.getElementById('rewriteBtnLabel').textContent = isFresh ? 'Generate Fresh Content' : 'Rewrite Content';
+        document.getElementById('rewriteBtn').style.background = isFresh
+            ? 'linear-gradient(135deg,#fb7185 0%,#a78bfa 100%)'
+            : 'linear-gradient(135deg,#60a5fa 0%,#3b82f6 100%)';
+        if (!isFresh) updatePageTypePreview();
+    }
+
+    function selectAngle(el, value) {
+        document.querySelectorAll('.angle-chip').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('freshAngle').value = value;
+    }
+
     function clearRewrite() {
-        document.getElementById('rewriteKeyword').value = '';
-        document.getElementById('rewriteSecondaryKeywords').value = '';
-        document.getElementById('rewriteAudience').value = '';
-        document.getElementById('currentContent').value = '';
+        ['rewriteKeyword','rewriteSecondaryKeywords','rewriteAudience','currentContent',
+         'freshAngle','freshBrandContext'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
         document.getElementById('rewriteResults').innerHTML = '';
     }
 
@@ -1121,6 +1317,8 @@ Fill in 4 to 5 sectionsToRewrite entries for YOUR URL. Fill in one competitor ob
     document.addEventListener('DOMContentLoaded', function() {
         const pt = document.getElementById('pageType');
         if (pt) { pt.addEventListener('change', updatePageTypePreview); updatePageTypePreview(); }
+        // Initialise rewrite mode UI to 'optimize' on load
+        setRewriteMode('optimize');
     });
 
     function updatePageTypePreview() {
@@ -1147,40 +1345,199 @@ Fill in 4 to 5 sectionsToRewrite entries for YOUR URL. Fill in one competitor ob
         const matchWordCount = document.getElementById('matchWordCount').checked;
 
         if (!keyword || !content) {
-            showError('rewriteResults', 'Please provide a primary keyword and your content to rewrite.');
+            showError('rewriteResults', 'Please provide a primary keyword and your content.');
             return;
         }
 
-        // Build word count map for sections
-        const sections = extractSections(content);
+        const sections   = extractSections(content);
         const totalWords = countWords(content);
+        const pageInfo   = PAGE_TYPE_STRUCTURES[pageType] || PAGE_TYPE_STRUCTURES['service'];
+
         let wordCountBlock = '';
         if (matchWordCount && sections.length > 0) {
-            const sectionList = sections.map(s => '  - "' + s.heading + '": ' + s.wordCount + ' words').join('\n');
+            const sectionList = sections.map(s => '  - "' + s.heading + '": ~' + s.wordCount + ' words').join('\n');
             wordCountBlock = `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-RULE 0 — WORD COUNT MATCHING (CRITICAL FOR UI/LAYOUT)
+WORD COUNT BLUEPRINT (CRITICAL — DESIGN LAYOUT PROTECTION)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-The original content is used in a designed webpage with fixed card/grid UI layouts. If sections are longer or shorter than the original, the design BREAKS.
+This page is inside a fixed card/grid layout. If sections are longer or shorter than the blueprint, the design BREAKS.
 
-You MUST match the word count of each section within ±10% tolerance.
-
-Total original word count: ${totalWords} words
-Section-by-section word counts to match:
+Total word count to match: ~${totalWords} words (±10%)
+Section-by-section targets:
 ${sectionList}
 
-For each section: count your words as you write. If you are running long, tighten the language. If you are running short, add a specific detail or proof point. Never pad with filler. Never cut important content — compress it instead.`;
+Match each section within ±10%. Tighten language if running long. Add a specific detail or proof point if running short. Never pad. Never cut — compress instead.`;
         }
 
-        showLoading('rewriteResults', 'Rewriting with strict page-type structure…');
+        // ─── FRESH REWRITE MODE ────────────────────────────────────────────
+        if (_rewriteMode === 'fresh') {
+            const freshAngle   = document.getElementById('freshAngle').value.trim();
+            const freshTone    = document.getElementById('freshTone').value;
+            const brandContext = document.getElementById('freshBrandContext').value.trim();
 
-        const pageInfo = PAGE_TYPE_STRUCTURES[pageType] || PAGE_TYPE_STRUCTURES['service'];
+            const toneMap = {
+                professional:  'Professional and authoritative — confident, expert, no fluff',
+                conversational:'Conversational and direct — talks to the reader like a knowledgeable colleague',
+                educational:   'Educational and expert — explains mechanisms and reasoning clearly',
+                persuasive:    'Persuasive and conversion-focused — every paragraph moves the reader toward action',
+                bold:          'Bold and opinionated — takes strong positions, uses punchy sentences, does not hedge'
+            };
+
+            showLoading('rewriteResults', 'Building fresh content from scratch… 30–45 seconds');
+
+            const structureBlueprint = sections.length > 0
+                ? sections.map((s, i) => `  Section ${i+1}: "${s.heading}" — ${s.wordCount} words`).join('\n')
+                : '  (Structure will be extracted from the reference content below)';
+
+            const freshPrompt = `You are a world-class content strategist and senior copywriter. Your task is to write a COMPLETELY FRESH page — not a rewrite, not a paraphrase, not a synonym swap.
+
+═══════════════════════════════════
+ABSOLUTE ORIGINALITY RULES (NON-NEGOTIABLE)
+═══════════════════════════════════
+RULE 1 — NO PARAPHRASING
+Do not take any sentence from the reference and rephrase it. Not one sentence. Not one clause. Not one phrase. Every idea, argument, and proof point must be conceived and written from scratch.
+
+RULE 2 — NO SYNONYM SUBSTITUTION
+Spinning (replacing words with synonyms while keeping the same sentence structure) is explicitly forbidden. If you catch yourself keeping the same sentence skeleton and swapping words — stop, delete, and write the thought from scratch.
+
+RULE 3 — NEW ANGLE, NEW NARRATIVE
+- Open each section from a completely different angle than the reference used
+- Use different primary arguments and proof points in every section
+- A reader who has seen the original page must feel they are reading a completely different piece
+
+RULE 4 — ORIGINAL PROOF POINTS
+Do not copy statistics, case study details, or examples from the reference. Introduce original concrete proof points — specific percentages, timeframes, client scenarios, results. If no specific data is provided, use credible industry-standard benchmarks attributed to "industry research" or "client data".
+
+RULE 5 — SELF-AUDIT BEFORE EACH SECTION
+Before writing each section, mentally ask: "If I deleted the reference version of this section from my memory, what would I write?" That is what you write.
+
+${wordCountBlock}
+
+═══════════════════════════════════
+CONTENT SPECIFICATIONS
+═══════════════════════════════════
+PRIMARY KEYWORD: "${keyword}"
+SECONDARY / LSI KEYWORDS: ${secondaryKeywords || 'derive naturally — use the full semantic vocabulary around this topic'}
+PAGE TYPE: ${pageInfo.label}
+TARGET AUDIENCE: ${audience || 'general business audience'}
+TONE OF VOICE: ${toneMap[freshTone] || toneMap['professional']}
+CONTENT ANGLE / PERSPECTIVE: ${freshAngle || 'Authority-first — lead with credibility, proof points, and measurable outcomes'}
+BRAND / BUSINESS CONTEXT: ${brandContext || 'Write with a credible expert voice. Weave in plausible proof points that a strong agency or brand in this space would have.'}
+
+═══════════════════════════════════
+KEYWORD STRATEGY
+═══════════════════════════════════
+PRIMARY KEYWORD "${keyword}":
+- Place in the H1, within the first 100 words, in the most important H2, in the meta title, and meta description
+- Use 3–5 times total with natural semantic variations — never force it, never repeat consecutively
+- Keyword density: 1–1.5%. If a sentence reads awkward with the keyword, rephrase the sentence
+
+SECONDARY / LSI KEYWORDS:
+- Use as the natural vocabulary an expert in this field would speak — not as a checklist
+- Distribute across different sections — never cluster two in the same paragraph
+- At least one secondary keyword should anchor a FAQ question
+- At least one should appear in an H3 sub-heading or bullet header
+- Maximum two uses per secondary keyword across the full piece
+
+═══════════════════════════════════
+E-E-A-T REQUIREMENTS
+═══════════════════════════════════
+EXPERIENCE — demonstrate real-world familiarity:
+- Specific, quantifiable outcomes: "clients saw a 40–60% improvement in X within 90 days"
+- Reference real tools, real processes, real decision points that only practitioners would know
+- Use scenario language: "When a client comes to us with X problem, here is what we actually find…"
+
+EXPERTISE — signal deep subject mastery:
+- Explain the WHY behind every recommendation, not just the WHAT
+- Acknowledge trade-offs and limitations that generic content never mentions
+- Use precise technical vocabulary where it belongs
+
+AUTHORITATIVENESS — establish credibility through specificity:
+- Specific numbers beat general claims: "97% of our campaigns" beats "most campaigns"
+- Reference industry benchmarks with attribution
+- Mention certifications, years of operation, client counts, industries served
+
+TRUSTWORTHINESS — build confidence, not hype:
+- Every claim must be believable — no empty superlatives
+- CTA language is benefit-clear and low-pressure: "Book a Free Strategy Call" not "Contact Us Today!!!"
+- Honest framing: acknowledge what this approach does NOT do or is not suited for
+
+═══════════════════════════════════
+HELPFUL CONTENT SYSTEM COMPLIANCE
+═══════════════════════════════════
+Before including any paragraph, apply this test:
+- Does this provide genuine value the reader cannot find identically elsewhere?
+- Is it written from real expertise — not assembled from generic knowledge?
+- Would the reader feel completely satisfied — not needing to visit another page?
+
+WHO / HOW / WHY:
+WHO: Clear, credible expert voice behind this content
+HOW: Genuine effort, original thinking, real expertise
+WHY: Serving the reader's actual need — not just targeting a keyword
+
+═══════════════════════════════════
+GEO / AI OVERVIEW VISIBILITY
+═══════════════════════════════════
+- Open every major H2 section with a 1–2 sentence direct answer to the implicit question the heading represents
+- Include at least one concrete data point or proof point per major section
+- H2s and H3s should mirror real conversational search queries: "How does X work?", "Why choose X for Y?"
+- FAQ answers: 2–4 sentences, direct, complete — no "contact us to find out more" as a standalone answer
+
+═══════════════════════════════════
+CONTENT QUALITY STANDARDS
+═══════════════════════════════════
+SPECIFICITY BEATS VAGUENESS:
+❌ "We have years of experience"  →  ✅ "Delivering measurable results for 400+ clients since 2009"
+❌ "We offer great results"       →  ✅ "Clients average 40% lower cost-per-lead within 90 days"
+❌ "Our team is expert"           →  ✅ "Our team holds [certification] and has managed [specific scope]"
+
+BENEFITS OVER FEATURES — frame every capability as what it produces for the client.
+
+HUMAN EXPERT VOICE — write directly to the reader:
+- NEVER use: "Furthermore", "It is worth noting", "In today's digital landscape", "In conclusion", "It goes without saying"
+- NEVER claim "leading / top / best-in-class" — prove it with specifics
+- Every sentence earns its place: no padding, no filler, no restatement
+
+═══════════════════════════════════
+STRUCTURE BLUEPRINT (preserve exactly — this is the mould)
+═══════════════════════════════════
+Reproduce this EXACT section structure — same heading names, same order, same approximate word count.
+The design layout is fixed. Do NOT add, remove, merge, or reorder any section.
+
+${structureBlueprint}
+
+You are writing DIFFERENT CONTENT into the SAME MOULD. The mould is sacred. The content is brand new.
+
+═══════════════════════════════════
+REFERENCE PAGE (structure blueprint only — do NOT paraphrase or copy any content)
+═══════════════════════════════════
+${content}
+
+═══════════════════════════════════
+NOW WRITE THE FRESH PAGE
+═══════════════════════════════════
+Write the complete fresh page now, section by section.
+- Do NOT truncate. Do NOT stop early. Every section must be fully written.
+- End with: Meta Title (under 60 chars) · URL Slug · Meta Description (under 155 chars)
+The output must be publish-ready. Every word original. Every section matched to the blueprint length. Go.`;
+
+            try {
+                const result = await callClaude(freshPrompt, 8000);
+                displayResults('rewriteResults', result, true);
+            } catch (error) {
+                showError('rewriteResults', error.message);
+            }
+            return;
+        }
+
+        // ─── OPTIMIZE EXISTING MODE ───────────────────────────────────────────
+        showLoading('rewriteResults', 'Rewriting with strict page-type structure…');
 
         const prompt = `You are a world-class SEO content strategist and editor. You have deep mastery of Google's E-E-A-T framework, Google's Helpful Content System, AI Overview optimisation, and GEO/LLM visibility best practices. You know exactly what separates content that ranks and gets cited by AI from content that doesn't.
 
 Your job: REWRITE the content below to be the single best page on the internet for the primary keyword. Keep the EXACT same structure as the original — same sections, same headings, same order. Only the words inside each section change.
 
-\${wordCountBlock}
+${wordCountBlock}
 
 PRIMARY KEYWORD: "${keyword}"
 SECONDARY / LSI KEYWORDS: ${secondaryKeywords || 'none specified'}
@@ -1879,11 +2236,18 @@ Write the complete, publish-ready content now. Do not truncate. Do not stop earl
 
     const _resultStore = {};
 
-    function displayResults(containerId, content) {
+    function displayResults(containerId, content, isFresh) {
         _resultStore[containerId] = content;
         const rendered = mdToHtml(content);
+        const badge = isFresh
+            ? `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                   <span class="fresh-mode-badge">🌱 Fresh Content — 100% Original</span>
+                   <span style="font-size:12px;color:#64748b;">No paraphrasing • New messaging • Same structure</span>
+               </div>`
+            : '';
         document.getElementById(containerId).innerHTML = `
             <div style="margin-top:24px;">
+                ${badge}
                 <div class="success-message">Done! Formatted and ready to copy or download.</div>
                 <div class="content-box">
                     <div class="content-preview" style="white-space:normal;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.75;max-height:560px;overflow-y:auto;">
